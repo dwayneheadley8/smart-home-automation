@@ -267,6 +267,22 @@ public class SmartHomeGUI extends JFrame {
         // Create tabbed pane
         JTabbedPane tabbedPane = new JTabbedPane();
         
+            // Add tab change listener to control device list and button states
+            tabbedPane.addChangeListener(e -> {
+                int selectedIndex = tabbedPane.getSelectedIndex();
+                if (selectedIndex == 0) {
+                    // Status tab: device list enabled, buttons controlled by device selection
+                    deviceList.setEnabled(true);
+                    updateButtonStates();
+                } else if (selectedIndex == 1) {
+                    // Rooms tab: device list disabled, buttons enabled for room control
+                    deviceList.setEnabled(false);
+                    deviceList.clearSelection();
+                    turnOnButton.setEnabled(true);
+                    turnOffButton.setEnabled(true);
+                }
+            });
+        
         // Status & Activity Log Tab
         JPanel statusPanel = new JPanel(new BorderLayout());
         statusPanel.setBorder(new TitledBorder("Status & Activity Log"));
@@ -535,6 +551,24 @@ public class SmartHomeGUI extends JFrame {
                 logStatus("Status: " + selectedDevice.getStatus());
             }
         }
+    }
+    
+    /**
+     * Updates the state of control buttons based on the current selection or context.
+     * Enables device-level buttons when a device is selected (Status tab),
+     * or enables room-level control when Rooms tab is active.
+     */
+    private void updateButtonStates() {
+        // If a device is selected, enable device control buttons
+        if (selectedDevice != null) {
+            turnOnButton.setEnabled(true);
+            turnOffButton.setEnabled(true);
+            return;
+        }
+
+        // Otherwise, no device selected - disable device buttons by default
+        turnOnButton.setEnabled(false);
+        turnOffButton.setEnabled(false);
     }
     
     /**
