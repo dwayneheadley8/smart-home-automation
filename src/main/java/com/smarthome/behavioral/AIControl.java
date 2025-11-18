@@ -15,12 +15,17 @@ import java.util.Random;
  * - Energy efficiency
  * - User preferences (simulated)
  * 
+ * Supports both intelligent analysis and random automation modes.
+ * 
  * @author Your Name
- * @version 1.0
+ * @version 2.0
  */
 public class AIControl implements ControlStrategy {
     private Random random;
     private int occupancyLevel; // 0-100 (simulated occupancy detection)
+    private Thread aiThread;
+    private boolean isRunning;
+    private List<SmartDevice> controlledDevices;
     
     /**
      * Creates an AI control strategy.
@@ -28,6 +33,8 @@ public class AIControl implements ControlStrategy {
     public AIControl() {
         this.random = new Random();
         this.occupancyLevel = random.nextInt(101);
+        this.isRunning = false;
+        this.aiThread = null;
     }
     
     /**
@@ -43,6 +50,92 @@ public class AIControl implements ControlStrategy {
         
         System.out.println("[AI MODE] Making intelligent decisions...");
         makeIntelligentDecisions(devices);
+    }
+    
+    /**
+     * Starts random device automation - devices turn on/off randomly every 5 seconds.
+     * 
+     * @param devices List of devices to automate
+     */
+    public void startRandomAutomation(List<SmartDevice> devices) {
+        if (isRunning) {
+            System.out.println("[AI MODE] Random automation already running!");
+            return;
+        }
+        
+        this.controlledDevices = devices;
+        this.isRunning = true;
+        
+        System.out.println("[AI MODE] 🤖 Starting Random Device Automation...");
+        System.out.println("[AI MODE] Devices will turn on/off randomly every 5 seconds");
+        
+        aiThread = new Thread(() -> {
+            while (isRunning) {
+                try {
+                    Thread.sleep(5000);
+                    
+                    if (isRunning && controlledDevices != null) {
+                        if (!controlledDevices.isEmpty()) {
+                            int randomIndex = random.nextInt(controlledDevices.size());
+                            SmartDevice device = controlledDevices.get(randomIndex);
+                            
+                            boolean turnOn = random.nextBoolean();
+                            
+                            if (turnOn) {
+                                device.turnOn();
+                                System.out.println("[AI MODE] 🟢 " + device.getName() + " turned ON automatically");
+                            } else {
+                                device.turnOff();
+                                System.out.println("[AI MODE] 🔴 " + device.getName() + " turned OFF automatically");
+                            }
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    if (isRunning) {
+                        System.out.println("[AI MODE] Automation interrupted");
+                    }
+                    break;
+                }
+            }
+        });
+        
+        aiThread.setName("AI-Automation-Thread");
+        aiThread.setDaemon(true);
+        aiThread.start();
+    }
+    
+    /**
+     * Stops the random device automation.
+     */
+    public void stopRandomAutomation() {
+        if (!isRunning) {
+            System.out.println("[AI MODE] Random automation is not running");
+            return;
+        }
+        
+        System.out.println("[AI MODE] 🤖 Stopping Random Device Automation...");
+        isRunning = false;
+        
+        if (aiThread != null) {
+            aiThread.interrupt();
+            try {
+                aiThread.join(1000);
+            } catch (InterruptedException e) {
+                System.out.println("[AI MODE] Interrupted while stopping automation");
+            }
+            aiThread = null;
+        }
+        
+        System.out.println("[AI MODE] Random automation stopped");
+    }
+    
+    /**
+     * Checks if random automation is currently running.
+     * 
+     * @return true if running, false otherwise
+     */
+    public boolean isAutomationRunning() {
+        return isRunning;
     }
     
     /**
