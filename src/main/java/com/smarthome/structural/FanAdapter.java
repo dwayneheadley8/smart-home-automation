@@ -16,7 +16,7 @@ import java.util.List;
  * 
  * Now the old fan can work in our smart home system!
  * 
- * @author Your Name
+ * @author dwayne headley
  * @version 1.0
  */
 public class FanAdapter implements SmartDevice {

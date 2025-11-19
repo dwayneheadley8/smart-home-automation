@@ -6,7 +6,7 @@ import com.smarthome.devices.SmartDevice;
  * Command to turn on a device.
  * The undo operation turns it back off.
  * 
- * @author Your Name
+ * @author dwayne headley
  * @version 1.0
  */
 public class TurnOnCommand implements Command {

@@ -10,7 +10,7 @@ import java.util.List;
  * A logger that observes devices and keeps a history of changes.
  * Demonstrates that multiple observers can watch the same device.
  * 
- * @author Your Name
+ * @author dwayne headley
  * @version 1.0
  */
 public class DeviceLogger implements Observer {

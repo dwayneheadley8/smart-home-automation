@@ -6,7 +6,7 @@ import com.smarthome.devices.Thermostat;
  * Command to adjust the temperature of a thermostat.
  * The undo operation restores the previous temperature.
  * 
- * @author Your Name
+ * @author dwayne headley
  * @version 1.0
  */
 public class AdjustTemperatureCommand implements Command {

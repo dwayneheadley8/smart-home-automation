@@ -8,7 +8,7 @@ import java.util.List;
  * Represents a smart thermostat that controls temperature.
  * Can heat or cool to reach a target temperature.
  * 
- * @author Your Name
+ * @author dwayne headley
  * @version 1.0
  */
 public class Thermostat implements SmartDevice {

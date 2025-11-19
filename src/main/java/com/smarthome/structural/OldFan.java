@@ -7,7 +7,7 @@ package com.smarthome.structural;
  * Notice: This class does NOT implement SmartDevice!
  * It has different method names (startFan vs turnOn).
  * 
- * @author Your Name
+ * @author dwayne headley
  * @version 1.0
  */
 public class OldFan {

@@ -10,7 +10,7 @@ import com.smarthome.behavioral.Observer;
  * Decorators "wrap" a device and add additional functionality
  * without modifying the original device class.
  * 
- * @author Your Name
+ * @author dwayne headley
  * @version 1.0
  */
 public abstract class DeviceDecorator implements SmartDevice {

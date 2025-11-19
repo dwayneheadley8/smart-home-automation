@@ -10,7 +10,7 @@ package com.smarthome.behavioral;
  * - Command logging
  * - Macro recording
  * 
- * @author Your Name
+ * @author dwayne headley
  * @version 1.0
  */
 public interface Command {

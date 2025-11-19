@@ -14,7 +14,7 @@ import java.util.Stack;
  * 
  * This is the "brain" of the smart home that manages all devices.
  * 
- * @author Your Name
+ * @author dwayne headley
  * @version 1.0
  */
 public class CentralController implements Observer {

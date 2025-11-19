@@ -10,7 +10,7 @@ import java.util.List;
  * This implements the Strategy Pattern - allows switching
  * between different control algorithms at runtime.
  * 
- * @author Your Name
+ * @author dwayne headley
  * @version 1.0
  */
 public interface ControlStrategy {

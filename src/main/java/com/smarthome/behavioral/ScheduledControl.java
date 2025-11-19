@@ -13,7 +13,7 @@ import java.util.Map;
  * Controls devices based on time schedules.
  * Perfect for routines like morning wake-up, evening wind-down, etc.
  * 
- * @author Your Name
+ * @author dwayne headley
  * @version 1.0
  */
 public class ScheduledControl implements ControlStrategy {

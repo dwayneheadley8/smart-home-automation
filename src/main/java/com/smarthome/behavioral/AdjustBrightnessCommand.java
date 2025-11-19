@@ -6,7 +6,7 @@ import com.smarthome.devices.Light;
  * Command to adjust the brightness of a light.
  * The undo operation restores the previous brightness.
  * 
- * @author Your Name
+ * @author dwayne headley
  * @version 1.0
  */
 public class AdjustBrightnessCommand implements Command {

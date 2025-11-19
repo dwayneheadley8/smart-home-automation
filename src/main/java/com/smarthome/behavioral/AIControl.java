@@ -17,15 +17,24 @@ import java.util.Random;
  * 
  * Supports both intelligent analysis and random automation modes.
  * 
- * @author Your Name
+ * @author dwayne headley
  * @version 2.0
  */
 public class AIControl implements ControlStrategy {
+    
+    /**
+     * Callback interface for device state changes during automation.
+     */
+    public interface AutomationCallback {
+        void onDeviceStateChanged(String deviceName, boolean isOn);
+    }
+    
     private Random random;
     private int occupancyLevel; // 0-100 (simulated occupancy detection)
     private Thread aiThread;
     private boolean isRunning;
     private List<SmartDevice> controlledDevices;
+    private AutomationCallback callback;
     
     /**
      * Creates an AI control strategy.
@@ -35,6 +44,16 @@ public class AIControl implements ControlStrategy {
         this.occupancyLevel = random.nextInt(101);
         this.isRunning = false;
         this.aiThread = null;
+        this.callback = null;
+    }
+    
+    /**
+     * Sets the callback for device state changes.
+     * 
+     * @param callback The callback to invoke when devices change state
+     */
+    public void setAutomationCallback(AutomationCallback callback) {
+        this.callback = callback;
     }
     
     /**
@@ -66,7 +85,7 @@ public class AIControl implements ControlStrategy {
         this.controlledDevices = devices;
         this.isRunning = true;
         
-        System.out.println("[AI MODE] 🤖 Starting Random Device Automation...");
+        System.out.println("[AI MODE] Starting Random Device Automation...");
         System.out.println("[AI MODE] Devices will turn on/off randomly every 5 seconds");
         
         aiThread = new Thread(() -> {
@@ -84,9 +103,15 @@ public class AIControl implements ControlStrategy {
                             if (turnOn) {
                                 device.turnOn();
                                 System.out.println("[AI MODE] 🟢 " + device.getName() + " turned ON automatically");
+                                if (callback != null) {
+                                    callback.onDeviceStateChanged(device.getName(), true);
+                                }
                             } else {
                                 device.turnOff();
                                 System.out.println("[AI MODE] 🔴 " + device.getName() + " turned OFF automatically");
+                                if (callback != null) {
+                                    callback.onDeviceStateChanged(device.getName(), false);
+                                }
                             }
                         }
                     }
@@ -113,7 +138,7 @@ public class AIControl implements ControlStrategy {
             return;
         }
         
-        System.out.println("[AI MODE] 🤖 Stopping Random Device Automation...");
+        System.out.println("[AI MODE] Stopping Random Device Automation...");
         isRunning = false;
         
         if (aiThread != null) {

@@ -40,6 +40,7 @@ public class SmartHomeGUI extends JFrame {
     private JButton undoButton;
     private JButton redoButton;
     private JLabel selectedDeviceLabel;
+    private JTabbedPane tabbedPane;
     
     // Brightness slider
     private JSlider brightnessSlider;
@@ -59,6 +60,9 @@ public class SmartHomeGUI extends JFrame {
     
     // Legacy devices
     private List<FanAdapter> legacyFans;
+    
+    // AI log area
+    private JTextArea aiLogArea;
     
     /**
      * Creates the Smart Home GUI.
@@ -218,11 +222,11 @@ public class SmartHomeGUI extends JFrame {
         turnOffButton.addActionListener(e -> turnOffDevice());
         turnOffButton.setEnabled(false);
         
-        undoButton = new JButton("↶ Undo");
+        undoButton = new JButton("Undo");
         undoButton.setFont(new Font("Arial", Font.BOLD, 14));
         undoButton.addActionListener(e -> undoCommand());
         
-        redoButton = new JButton("↷ Redo");
+        redoButton = new JButton("Redo");
         redoButton.setFont(new Font("Arial", Font.BOLD, 14));
         redoButton.addActionListener(e -> redoCommand());
         
@@ -265,7 +269,7 @@ public class SmartHomeGUI extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout());
         
         // Create tabbed pane
-        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane = new JTabbedPane();
         
             // Add tab change listener to control device list and button states
             tabbedPane.addChangeListener(e -> {
@@ -329,93 +333,9 @@ public class SmartHomeGUI extends JFrame {
         
         roomsPanel.add(roomSplitPane, BorderLayout.CENTER);
         
-        // AI Control Tab
-        JPanel aiPanel = new JPanel(new BorderLayout());
-        aiPanel.setBorder(new TitledBorder("🤖 AI Automation Control"));
-        
-        // Create AI button panel
-        JPanel aiButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 20));
-        aiButtonPanel.setBackground(new Color(32, 32, 40));
-        
-        JButton startAIButton = new JButton("▶ Start AI Automation");
-        startAIButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        startAIButton.setBackground(new Color(76, 175, 80));
-        startAIButton.setForeground(Color.WHITE);
-        startAIButton.setFocusPainted(false);
-        startAIButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        startAIButton.setPreferredSize(new Dimension(200, 45));
-        
-        JButton stopAIButton = new JButton("⏹ Stop AI Automation");
-        stopAIButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        stopAIButton.setBackground(new Color(244, 67, 54));
-        stopAIButton.setForeground(Color.WHITE);
-        stopAIButton.setFocusPainted(false);
-        stopAIButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        stopAIButton.setPreferredSize(new Dimension(200, 45));
-        stopAIButton.setEnabled(false);
-        
-        JLabel aiStatusLabel = new JLabel("🛑 AI Automation: STOPPED");
-        aiStatusLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        aiStatusLabel.setForeground(new Color(255, 193, 7));
-        
-        startAIButton.addActionListener(e -> {
-            AIControl aiControl = (AIControl) controller.getControlStrategy();
-            if (aiControl != null) {
-                aiControl.startRandomAutomation(controller.getAllDevices());
-                startAIButton.setEnabled(false);
-                stopAIButton.setEnabled(true);
-                aiStatusLabel.setText("🟢 AI Automation: RUNNING");
-                aiStatusLabel.setForeground(new Color(100, 200, 255));
-            }
-        });
-        
-        stopAIButton.addActionListener(e -> {
-            AIControl aiControl = (AIControl) controller.getControlStrategy();
-            if (aiControl != null) {
-                aiControl.stopRandomAutomation();
-                startAIButton.setEnabled(true);
-                stopAIButton.setEnabled(false);
-                aiStatusLabel.setText("🛑 AI Automation: STOPPED");
-                aiStatusLabel.setForeground(new Color(255, 193, 7));
-            }
-        });
-        
-        aiButtonPanel.add(startAIButton);
-        aiButtonPanel.add(stopAIButton);
-        
-        // AI info panel
-        JPanel aiInfoPanel = new JPanel(new BorderLayout());
-        aiInfoPanel.setBackground(new Color(32, 32, 40));
-        aiInfoPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
-        
-        JLabel infoTextLabel = new JLabel("<html><div style='color: #64C8FF; font-family: Segoe UI;'>" +
-                "<b>About AI Automation:</b><br>" +
-                "• Devices randomly turn ON/OFF every 5 seconds<br>" +
-                "• Cycles through all available smart devices<br>" +
-                "• Perfect for testing and demonstrations<br>" +
-                "• Real-time status updates in Status & Rooms tabs<br>" +
-                "• Click Start to begin, Stop to halt automation" +
-                "</div></html>");
-        infoTextLabel.setOpaque(false);
-        
-        aiInfoPanel.add(infoTextLabel, BorderLayout.WEST);
-        
-        // Assemble AI panel
-        JPanel aiTopPanel = new JPanel();
-        aiTopPanel.setLayout(new BoxLayout(aiTopPanel, BoxLayout.Y_AXIS));
-        aiTopPanel.setBackground(new Color(32, 32, 40));
-        aiTopPanel.add(aiStatusLabel);
-        aiTopPanel.add(Box.createVerticalStrut(10));
-        aiTopPanel.add(aiButtonPanel);
-        
-        aiPanel.add(aiTopPanel, BorderLayout.NORTH);
-        aiPanel.add(aiInfoPanel, BorderLayout.CENTER);
-        aiPanel.setBackground(new Color(32, 32, 40));
-        
-        // Add tabs
+        // Add tabs - AI Control tab will be added dynamically when AI mode is selected
         tabbedPane.addTab("Status", statusPanel);
         tabbedPane.addTab("Rooms", roomsPanel);
-        tabbedPane.addTab("🤖 AI Control", aiPanel);
         
     mainPanel.add(tabbedPane, BorderLayout.CENTER);
     // Increase right panel width so status/log is more readable
@@ -735,15 +655,33 @@ public class SmartHomeGUI extends JFrame {
         switch (mode) {
             case "Manual":
                 strategy = new ManualControl();
+                // Hide AI Control tab for Manual mode
+                if (tabbedPane.getTabCount() > 2) {
+                    tabbedPane.removeTabAt(2);
+                }
                 break;
             case "Scheduled":
                 strategy = new ScheduledControl();
+                // Hide AI Control tab for Scheduled mode
+                if (tabbedPane.getTabCount() > 2) {
+                    tabbedPane.removeTabAt(2);
+                }
                 break;
             case "AI":
                 strategy = new AIControl();
+                // Show AI Control tab for AI mode (if not already visible)
+                if (tabbedPane.getTabCount() == 2) {
+                    createAndAddAIControlTab();
+                }
+                // Auto-switch to AI Control tab
+                tabbedPane.setSelectedIndex(2);
                 break;
             default:
                 strategy = new ManualControl();
+                // Hide AI Control tab by default
+                if (tabbedPane.getTabCount() > 2) {
+                    tabbedPane.removeTabAt(2);
+                }
         }
         
         controller.setControlStrategy(strategy);
@@ -752,10 +690,136 @@ public class SmartHomeGUI extends JFrame {
     }
     
     /**
+     * Creates and adds the AI Control tab to the tabbed pane.
+     */
+    private void createAndAddAIControlTab() {
+        // AI Control Tab
+        JPanel aiPanel = new JPanel(new BorderLayout());
+        aiPanel.setBorder(new TitledBorder("AI Automation Control"));
+        
+        // Create AI button panel
+        JPanel aiButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 20));
+        aiButtonPanel.setBackground(new Color(32, 32, 40));
+        
+        JButton startAIButton = new JButton("Start AI Automation");
+        startAIButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        startAIButton.setBackground(new Color(244, 244, 244));
+        startAIButton.setForeground(Color.BLACK);
+        startAIButton.setFocusPainted(false);
+        startAIButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        startAIButton.setPreferredSize(new Dimension(200, 45));
+        
+        JButton stopAIButton = new JButton("Stop AI Automation");
+        stopAIButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        stopAIButton.setBackground(new Color(244, 244, 244));
+        stopAIButton.setForeground(Color.BLACK);
+        stopAIButton.setFocusPainted(false);
+        stopAIButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        stopAIButton.setPreferredSize(new Dimension(200, 45));
+        stopAIButton.setEnabled(false);
+        
+        JLabel aiStatusLabel = new JLabel("🛑 AI Automation: STOPPED");
+        aiStatusLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        aiStatusLabel.setForeground(new Color(255, 193, 7));
+        
+        startAIButton.addActionListener(e -> {
+            AIControl aiControl = (AIControl) controller.getControlStrategy();
+            if (aiControl != null) {
+                // Set up callback for device state changes
+                aiControl.setAutomationCallback((deviceName, isOn) -> {
+                    String action = isOn ? "🟢 turned ON" : "🔴 turned OFF";
+                    logAIStatus(deviceName + " " + action);
+                });
+                
+                aiControl.startRandomAutomation(controller.getAllDevices());
+                startAIButton.setEnabled(false);
+                stopAIButton.setEnabled(true);
+                aiStatusLabel.setText("🟢 AI Automation: RUNNING");
+                aiStatusLabel.setForeground(new Color(100, 200, 255));
+                logAIStatus("AI Automation started");
+            }
+        });
+        
+        stopAIButton.addActionListener(e -> {
+            AIControl aiControl = (AIControl) controller.getControlStrategy();
+            if (aiControl != null) {
+                aiControl.stopRandomAutomation();
+                startAIButton.setEnabled(true);
+                stopAIButton.setEnabled(false);
+                aiStatusLabel.setText("🛑 AI Automation: STOPPED");
+                aiStatusLabel.setForeground(new Color(255, 193, 7));
+                logAIStatus("AI Automation stopped");
+            }
+        });
+        
+        aiButtonPanel.add(startAIButton);
+        aiButtonPanel.add(stopAIButton);
+        
+        // AI Log area
+        aiLogArea = new JTextArea();
+        aiLogArea.setEditable(false);
+        aiLogArea.setFont(new Font("Monospaced", Font.PLAIN, 11));
+        aiLogArea.setText("AI Automation Log:\nWaiting for automation to start...\n\n");
+        aiLogArea.setBackground(new Color(32, 32, 40));
+        aiLogArea.setForeground(new Color(100, 200, 255));
+        
+        JScrollPane aiLogScrollPane = new JScrollPane(aiLogArea);
+        aiLogScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        aiLogScrollPane.setBorder(new TitledBorder("Automation Log"));
+        
+        // AI info panel
+        JPanel aiInfoPanel = new JPanel(new BorderLayout());
+        aiInfoPanel.setBackground(new Color(32, 32, 40));
+        aiInfoPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        
+        JLabel infoTextLabel = new JLabel("<html><div style='color: #64C8FF; font-family: Segoe UI;'>" +
+                "<b>About AI Automation:</b><br>" +
+                "• Devices randomly turn ON/OFF every 5 seconds<br>" +
+                "• Cycles through all available smart devices<br>" +
+                "• Perfect for testing and demonstrations<br>" +
+                "• Real-time status updates in Status & AI Log tabs<br>" +
+                "• Click Start to begin, Stop to halt automation" +
+                "</div></html>");
+        infoTextLabel.setOpaque(false);
+        
+        aiInfoPanel.add(infoTextLabel, BorderLayout.WEST);
+        
+        // Assemble AI panel with split pane
+        JPanel aiTopPanel = new JPanel();
+        aiTopPanel.setLayout(new BoxLayout(aiTopPanel, BoxLayout.Y_AXIS));
+        aiTopPanel.setBackground(new Color(32, 32, 40));
+        aiTopPanel.add(aiStatusLabel);
+        aiTopPanel.add(Box.createVerticalStrut(10));
+        aiTopPanel.add(aiButtonPanel);
+        
+        JSplitPane aiSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, aiInfoPanel, aiLogScrollPane);
+        aiSplitPane.setDividerLocation(0.3);
+        
+        aiPanel.add(aiTopPanel, BorderLayout.NORTH);
+        aiPanel.add(aiSplitPane, BorderLayout.CENTER);
+        aiPanel.setBackground(new Color(32, 32, 40));
+        
+        // Add AI Control tab
+        tabbedPane.addTab("🤖 AI Control", aiPanel);
+    }
+    
+    /**
      * Logs a status message.
      */
     private void logStatus(String message) {
         statusArea.append("[" + getCurrentTime() + "] " + message + "\n");
+        statusArea.setCaretPosition(statusArea.getDocument().getLength());
+    }
+    
+    /**
+     * Logs an AI status message to both AI log and main status area.
+     */
+    private void logAIStatus(String message) {
+        String timestamp = "[" + getCurrentTime() + "] ";
+        aiLogArea.append(timestamp + message + "\n");
+        aiLogArea.setCaretPosition(aiLogArea.getDocument().getLength());
+        // Also log to main status area
+        statusArea.append(timestamp + "🤖 " + message + "\n");
         statusArea.setCaretPosition(statusArea.getDocument().getLength());
     }
     

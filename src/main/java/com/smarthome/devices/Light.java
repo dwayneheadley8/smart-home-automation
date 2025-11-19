@@ -8,7 +8,7 @@ import java.util.List;
  * Represents a smart light with adjustable brightness.
  * The light can be turned on/off and brightness can be adjusted.
  * 
- * @author Your Name
+ * @author dwayne headley
  * @version 1.0
  */
 public class Light implements SmartDevice {

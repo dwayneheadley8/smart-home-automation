@@ -6,7 +6,7 @@ import com.smarthome.devices.SmartDevice;
  * Decorator that adds voice control capability to any device.
  * Allows controlling devices through voice commands.
  * 
- * @author Your Name
+ * @author dwayne headley
  * @version 1.0
  */
 public class VoiceControlDecorator extends DeviceDecorator {

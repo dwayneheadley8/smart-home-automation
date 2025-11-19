@@ -9,7 +9,7 @@ import com.smarthome.devices.SmartDevice;
  * This demonstrates the Decorator Pattern - adding functionality
  * dynamically without modifying the original device class.
  * 
- * @author Your Name
+ * @author dwayne headley
  * @version 1.0
  */
 public class EnergyMonitorDecorator extends DeviceDecorator {

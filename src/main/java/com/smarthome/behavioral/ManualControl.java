@@ -8,7 +8,7 @@ import java.util.List;
  * User has complete control over all devices.
  * No automatic actions are taken.
  * 
- * @author Your Name
+ * @author dwayne headley
  * @version 1.0
  */
 public class ManualControl implements ControlStrategy {

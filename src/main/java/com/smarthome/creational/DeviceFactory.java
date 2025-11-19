@@ -11,7 +11,7 @@ import com.smarthome.devices.*;
  * - Client code doesn't need to know specific device classes
  * - Single point of creation logic
  * 
- * @author Your Name
+ * @author dwayne headley
  * @version 1.0
  */
 public class DeviceFactory {

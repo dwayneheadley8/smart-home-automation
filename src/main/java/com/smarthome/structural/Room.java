@@ -12,7 +12,7 @@ import java.util.List;
  * This allows you to control multiple devices as a single unit.
  * For example: "Turn on Living Room" turns on all devices in that room.
  * 
- * @author Your Name
+ * @author dwayne headley
  * @version 1.0
  */
 public class Room implements SmartDevice {

@@ -6,7 +6,7 @@ import com.smarthome.behavioral.Observer;
  * Interface for all smart devices in the home automation system.
  * All devices must implement these basic operations.
  * 
- * @author Your Name
+ * @author dwayne headley
  * @version 1.0
  */
 public interface SmartDevice {
