@@ -162,8 +162,9 @@ SmartHomeSystem/
 
 ### Prerequisites
 
-- **Java 17+** (project compiled with Java 17)
+- **Java 24+** (project compiled with Java 24)
 - **Maven 3.8.0+** (for building)
+- If you don't have JDK 24 installed, download and install a JDK 24 distribution (Adoptium, Oracle, or vendor of your choice) and ensure `java` and `javac` on your PATH point to the JDK 24 executables.
 - **Git** (for version control)
 
 ### Installation
@@ -316,7 +317,7 @@ Room (Composite)
 
 ## 🛠️ Technologies
 
-- **Language**: Java 17
+- **Language**: Java 24
 - **Build Tool**: Maven 3.8.0+
 - **GUI Framework**: Swing (javax.swing)
 - **Version Control**: Git
