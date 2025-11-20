@@ -45,6 +45,19 @@ public class SmartHomeGUI extends JFrame {
     // Brightness slider
     private JSlider brightnessSlider;
     private JLabel brightnessLabel;
+    
+    // Temperature slider
+    private JSlider temperatureSlider;
+    private JLabel temperatureLabel;
+    
+    // Volume slider
+    private JSlider volumeSlider;
+    private JLabel volumeLabel;
+    
+    // Fan speed slider
+    private JSlider fanSpeedSlider;
+    private JLabel fanSpeedLabel;
+    
     private boolean isSliderUpdating = false; // Prevent recursion
     
     // Room display
@@ -125,7 +138,7 @@ public class SmartHomeGUI extends JFrame {
         panel.setBorder(new TitledBorder("Control Panel"));
         
         // Title
-        JLabel titleLabel = new JLabel("🏠 Smart Home Automation System", SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("Smart Home Automation System", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         
         // Mode selector
@@ -253,7 +266,56 @@ public class SmartHomeGUI extends JFrame {
         brightnessSlider.addChangeListener(e -> adjustBrightness());
         brightnessPanel.add(brightnessSlider, BorderLayout.CENTER);
         
-        deviceSpecificPanel.add(brightnessPanel);
+        // Temperature slider (for thermostats)
+        JPanel temperaturePanel = new JPanel(new BorderLayout());
+        temperatureLabel = new JLabel("Temperature: 72°F", SwingConstants.LEFT);
+        temperatureLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        temperaturePanel.add(temperatureLabel, BorderLayout.WEST);
+        
+        temperatureSlider = new JSlider(50, 90, 72);
+        temperatureSlider.setMajorTickSpacing(10);
+        temperatureSlider.setMinorTickSpacing(1);
+        temperatureSlider.setPaintTicks(true);
+        temperatureSlider.setPaintLabels(true);
+        temperatureSlider.addChangeListener(e -> adjustTemperature());
+        temperaturePanel.add(temperatureSlider, BorderLayout.CENTER);
+        
+        // Volume slider (for speakers)
+        JPanel volumePanel = new JPanel(new BorderLayout());
+        volumeLabel = new JLabel("Volume: 0%", SwingConstants.LEFT);
+        volumeLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        volumePanel.add(volumeLabel, BorderLayout.WEST);
+        
+        volumeSlider = new JSlider(0, 100, 0);
+        volumeSlider.setMajorTickSpacing(25);
+        volumeSlider.setMinorTickSpacing(1);
+        volumeSlider.setPaintTicks(true);
+        volumeSlider.setPaintLabels(true);
+        volumeSlider.addChangeListener(e -> adjustVolume());
+        volumePanel.add(volumeSlider, BorderLayout.CENTER);
+        
+        // Fan speed slider (for fans)
+        JPanel fanSpeedPanel = new JPanel(new BorderLayout());
+        fanSpeedLabel = new JLabel("Fan Speed: 0/3", SwingConstants.LEFT);
+        fanSpeedLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        fanSpeedPanel.add(fanSpeedLabel, BorderLayout.WEST);
+        
+        fanSpeedSlider = new JSlider(0, 3, 0);
+        fanSpeedSlider.setMajorTickSpacing(1);
+        fanSpeedSlider.setMinorTickSpacing(1);
+        fanSpeedSlider.setPaintTicks(true);
+        fanSpeedSlider.setPaintLabels(true);
+        fanSpeedSlider.addChangeListener(e -> adjustFanSpeed());
+        fanSpeedPanel.add(fanSpeedSlider, BorderLayout.CENTER);
+        
+        // Container panel to show/hide sliders based on device type
+        JPanel sliderContainerPanel = new JPanel(new GridLayout(4, 1, 0, 10));
+        sliderContainerPanel.add(brightnessPanel);
+        sliderContainerPanel.add(temperaturePanel);
+        sliderContainerPanel.add(volumePanel);
+        sliderContainerPanel.add(fanSpeedPanel);
+        
+        deviceSpecificPanel.add(sliderContainerPanel);
         
         panel.add(selectedDeviceLabel, BorderLayout.NORTH);
         panel.add(controlPanel, BorderLayout.CENTER);
@@ -524,13 +586,20 @@ public class SmartHomeGUI extends JFrame {
                 turnOnButton.setEnabled(true);
                 turnOffButton.setEnabled(true);
                 
-                // Update brightness slider for lights
+                // Update sliders based on device type
                 isSliderUpdating = true;
                 if (selectedDevice instanceof Light) {
                     Light light = (Light) selectedDevice;
                     brightnessSlider.setValue(light.getBrightness());
                     brightnessLabel.setText("Brightness: " + light.getBrightness() + "%");
                     brightnessSlider.setEnabled(true);
+                    brightnessLabel.setVisible(true);
+                    temperatureSlider.setEnabled(false);
+                    temperatureLabel.setVisible(false);
+                    volumeSlider.setEnabled(false);
+                    volumeLabel.setVisible(false);
+                    fanSpeedSlider.setEnabled(false);
+                    fanSpeedLabel.setVisible(false);
                 } else if (selectedDevice instanceof EnergyMonitorDecorator) {
                     EnergyMonitorDecorator decorator = (EnergyMonitorDecorator) selectedDevice;
                     SmartDevice wrapped = decorator.getWrappedDevice();
@@ -539,15 +608,68 @@ public class SmartHomeGUI extends JFrame {
                         brightnessSlider.setValue(light.getBrightness());
                         brightnessLabel.setText("Brightness: " + light.getBrightness() + "%");
                         brightnessSlider.setEnabled(true);
+                        brightnessLabel.setVisible(true);
+                        temperatureSlider.setEnabled(false);
+                        temperatureLabel.setVisible(false);
+                        volumeSlider.setEnabled(false);
+                        volumeLabel.setVisible(false);
+                        fanSpeedSlider.setEnabled(false);
+                        fanSpeedLabel.setVisible(false);
                     } else {
                         brightnessSlider.setEnabled(false);
+                        brightnessLabel.setVisible(false);
+                        temperatureSlider.setEnabled(false);
+                        temperatureLabel.setVisible(false);
+                        volumeSlider.setEnabled(false);
+                        volumeLabel.setVisible(false);
+                        fanSpeedSlider.setEnabled(false);
+                        fanSpeedLabel.setVisible(false);
                     }
+                } else if (selectedDevice instanceof Thermostat) {
+                    Thermostat thermostat = (Thermostat) selectedDevice;
+                    temperatureSlider.setValue((int) thermostat.getTargetTemp());
+                    temperatureLabel.setText("Temperature: " + (int) thermostat.getTargetTemp() + "°F");
+                    temperatureSlider.setEnabled(true);
+                    temperatureLabel.setVisible(true);
+                    brightnessSlider.setEnabled(false);
+                    brightnessLabel.setVisible(false);
+                    volumeSlider.setEnabled(false);
+                    volumeLabel.setVisible(false);
+                    fanSpeedSlider.setEnabled(false);
+                    fanSpeedLabel.setVisible(false);
+                } else if (selectedDevice instanceof Speaker) {
+                    Speaker speaker = (Speaker) selectedDevice;
+                    volumeSlider.setValue(speaker.getVolume());
+                    volumeLabel.setText("Volume: " + speaker.getVolume() + "%");
+                    volumeSlider.setEnabled(true);
+                    volumeLabel.setVisible(true);
+                    brightnessSlider.setEnabled(false);
+                    brightnessLabel.setVisible(false);
+                    temperatureSlider.setEnabled(false);
+                    temperatureLabel.setVisible(false);
+                    fanSpeedSlider.setEnabled(false);
+                    fanSpeedLabel.setVisible(false);
                 } else if (selectedDevice instanceof FanAdapter) {
                     FanAdapter fan = (FanAdapter) selectedDevice;
-                    brightnessLabel.setText("Fan Speed: " + fan.getSpeed() + "/3");
+                    fanSpeedSlider.setValue(fan.getSpeed());
+                    fanSpeedLabel.setText("Fan Speed: " + fan.getSpeed() + "/3");
+                    fanSpeedSlider.setEnabled(true);
+                    fanSpeedLabel.setVisible(true);
                     brightnessSlider.setEnabled(false);
+                    brightnessLabel.setVisible(false);
+                    temperatureSlider.setEnabled(false);
+                    temperatureLabel.setVisible(false);
+                    volumeSlider.setEnabled(false);
+                    volumeLabel.setVisible(false);
                 } else {
                     brightnessSlider.setEnabled(false);
+                    brightnessLabel.setVisible(false);
+                    temperatureSlider.setEnabled(false);
+                    temperatureLabel.setVisible(false);
+                    volumeSlider.setEnabled(false);
+                    volumeLabel.setVisible(false);
+                    fanSpeedSlider.setEnabled(false);
+                    fanSpeedLabel.setVisible(false);
                 }
                 isSliderUpdating = false;
                 
@@ -922,6 +1044,60 @@ public class SmartHomeGUI extends JFrame {
                     logStatus("Adjusted " + light.getName() + " brightness to " + brightnessValue + "%");
                     logStatus("Status: " + light.getStatus());
                 }
+            }
+        }
+    }
+    
+    /**
+     * Adjusts temperature when slider is moved.
+     */
+    private void adjustTemperature() {
+        if (selectedDevice != null && !isSliderUpdating) {
+            int temperatureValue = temperatureSlider.getValue();
+            temperatureLabel.setText("Temperature: " + temperatureValue + "°F");
+            
+            // Check if selected device is a Thermostat
+            if (selectedDevice instanceof Thermostat) {
+                Thermostat thermostat = (Thermostat) selectedDevice;
+                thermostat.setTargetTemp(temperatureValue);
+                logStatus("Adjusted " + thermostat.getName() + " temperature to " + temperatureValue + "°F");
+                logStatus("Status: " + thermostat.getStatus());
+            }
+        }
+    }
+    
+    /**
+     * Adjusts volume when slider is moved.
+     */
+    private void adjustVolume() {
+        if (selectedDevice != null && !isSliderUpdating) {
+            int volumeValue = volumeSlider.getValue();
+            volumeLabel.setText("Volume: " + volumeValue + "%");
+            
+            // Check if selected device is a Speaker
+            if (selectedDevice instanceof Speaker) {
+                Speaker speaker = (Speaker) selectedDevice;
+                speaker.setVolume(volumeValue);
+                logStatus("Adjusted " + speaker.getName() + " volume to " + volumeValue + "%");
+                logStatus("Status: " + speaker.getStatus());
+            }
+        }
+    }
+    
+    /**
+     * Adjusts fan speed when slider is moved.
+     */
+    private void adjustFanSpeed() {
+        if (selectedDevice != null && !isSliderUpdating) {
+            int speedValue = fanSpeedSlider.getValue();
+            fanSpeedLabel.setText("Fan Speed: " + speedValue + "/3");
+            
+            // Check if selected device is a FanAdapter
+            if (selectedDevice instanceof FanAdapter) {
+                FanAdapter fan = (FanAdapter) selectedDevice;
+                fan.setSpeed(speedValue);
+                logStatus("Adjusted " + fan.getName() + " speed to " + speedValue + "/3");
+                logStatus("Status: " + fan.getStatus());
             }
         }
     }

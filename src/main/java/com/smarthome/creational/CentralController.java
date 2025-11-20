@@ -14,8 +14,38 @@ import java.util.Stack;
  * 
  * This is the "brain" of the smart home that manages all devices.
  * 
+ *  * with undo/redo capability, and strategy-based automation.</p>
+ * 
+ * <h2>Design Patterns Used:</h2>
+ * <ul>
+ *   <li><b>Singleton Pattern:</b> Only one controller instance exists</li>
+ *   <li><b>Observer Pattern:</b> Observes all device state changes</li>
+ *   <li><b>Command Pattern:</b> Executes and manages command history</li>
+ * </ul>
+ * 
+ * <h2>Example Usage:</h2>
+ * <pre>
+ * {@code
+ * // Get the singleton instance
+ * CentralController controller = CentralController.getInstance();
+ * 
+ * // Add devices
+ * SmartDevice light = factory.createDevice("light", "Living Room");
+ * controller.addDevice(light);
+ * 
+ * // Execute commands with undo support
+ * Command cmd = new TurnOnCommand(light);
+ * controller.executeCommand(cmd);
+ * controller.undoLastCommand(); // Undo!
+ * }
+ * </pre>
+ * 
  * @author dwayne headley
  * @version 1.0
+ *  * @see SmartDevice
+ * @see Command
+ * @see Observer
+ * 
  */
 public class CentralController implements Observer {
     

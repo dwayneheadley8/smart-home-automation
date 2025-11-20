@@ -2,13 +2,28 @@ package com.smarthome.behavioral;
 
 /**
  * Command interface for the Command Pattern.
- * Each command encapsulates an action that can be executed and undone.
+ * <p>Commands encapsulate actions that can be executed and undone.
+ * This enables features like undo/redo, command queuing, and logging.</p>
  * 
- * This enables:
- * - Undo/redo functionality
- * - Command queuing
- * - Command logging
- * - Macro recording
+ * <h2>Implementing Classes:</h2>
+ * <ul>
+ *   <li>{@link TurnOnCommand} - Turns on a device</li>
+ *   <li>{@link TurnOffCommand} - Turns off a device</li>
+ *   <li>{@link AdjustBrightnessCommand} - Adjusts light brightness</li>
+ *   <li>{@link AdjustTemperatureCommand} - Adjusts thermostat temperature</li>
+ * </ul>
+ * 
+ * <h2>Example Usage:</h2>
+ * <pre>
+ * {@code
+ * // Create and execute command
+ * Command cmd = new TurnOnCommand(light);
+ * cmd.execute();
+ * 
+ * // Undo the command
+ * cmd.undo();
+ * }
+ * </pre>
  * 
  * @author dwayne headley
  * @version 1.0

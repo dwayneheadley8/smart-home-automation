@@ -3,6 +3,8 @@ package com.smarthome.devices;
 import com.smarthome.behavioral.Observer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Represents a smart thermostat that controls temperature.
@@ -18,6 +20,7 @@ public class Thermostat implements SmartDevice {
     private double targetTemp;
     private String mode; // "heating", "cooling", or "off"
     private List<Observer> observers;
+    private Timer temperatureAdjustmentTimer;
     
     /**
      * Creates a new Thermostat with the given name and current temperature.
@@ -80,6 +83,23 @@ public class Thermostat implements SmartDevice {
             updateMode();
         }
         System.out.println(name + " target temperature set to " + targetTemp + "°F");
+        
+        // Cancel any existing timer
+        if (temperatureAdjustmentTimer != null) {
+            temperatureAdjustmentTimer.cancel();
+        }
+        
+        // Start a new timer to adjust current temperature after 5 seconds
+        temperatureAdjustmentTimer = new Timer();
+        temperatureAdjustmentTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                currentTemp = targetTemp;
+                System.out.println(name + " current temperature adjusted to " + currentTemp + "°F");
+                notifyObservers();
+            }
+        }, 5000); // 5 second delay
+        
         notifyObservers();
     }
     

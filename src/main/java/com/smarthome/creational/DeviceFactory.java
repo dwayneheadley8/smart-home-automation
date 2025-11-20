@@ -4,12 +4,27 @@ import com.smarthome.devices.*;
 
 /**
  * Factory class for creating smart devices.
- * This implements the Factory Pattern - centralizes object creation.
+ * <p>This factory simplifies device creation and makes it easy to
+ * add new device types without modifying client code.</p>
  * 
- * Benefits:
- * - Easy to add new device types
- * - Client code doesn't need to know specific device classes
- * - Single point of creation logic
+ * <h2>Supported Device Types:</h2>
+ * <ul>
+ *   <li><b>"light"</b> - Creates a {@link Light} instance</li>
+ *   <li><b>"thermostat"</b> - Creates a {@link Thermostat} instance</li>
+ *   <li><b>"speaker"</b> - Creates a {@link Speaker} instance</li>
+ * </ul>
+ * 
+ * <h2>Example Usage:</h2>
+ * <pre>
+ * {@code
+ * DeviceFactory factory = new DeviceFactory();
+ * 
+ * // Create different device types
+ * SmartDevice light = factory.createDevice("light", "Living Room Light");
+ * SmartDevice thermostat = factory.createDevice("thermostat", "Main Thermostat");
+ * SmartDevice speaker = factory.createDevice("speaker", "Kitchen Speaker");
+ * }
+ * </pre>
  * 
  * @author dwayne headley
  * @version 1.0

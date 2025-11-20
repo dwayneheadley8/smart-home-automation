@@ -1,6 +1,6 @@
-# Smart Home Automation System
+# 🏠 Smart Home Automation System
 
-A comprehensive Java application demonstrating object-oriented design patterns and principles through a practical smart home automation system. This project includes a full-featured GUI for managing smart devices across multiple rooms.
+A comprehensive Java application demonstrating object-oriented design patterns and principles through a practical smart home automation system. This project includes a full-featured GUI for managing smart devices across multiple rooms with advanced AI automation capabilities.
 
 ## 📋 Table of Contents
 
@@ -9,31 +9,50 @@ A comprehensive Java application demonstrating object-oriented design patterns a
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
 - [Usage](#usage)
+- [Control Modes](#control-modes)
+- [AI Automation](#ai-automation)
 - [Architecture](#architecture)
 - [Technologies](#technologies)
+- [Building & Running](#building--running)
 
 ## ✨ Features
 
-### Device Management
+### Core Device Management
 - **Add/Remove Devices**: Dynamically add lights, thermostats, and speakers to any room
 - **Device Control**: Turn devices on/off with individual or room-wide controls
 - **Room Grouping**: Organize devices into logical rooms and control them as a group
 - **Real-time Status**: View live device status and state changes in the GUI
+- **Brightness Control**: Adjustable brightness slider for lights (0-100%)
+- **Device-Specific Settings**: Temperature control for thermostats, volume for speakers
 
 ### Room Management
 - **Multiple Rooms**: Pre-configured with Living Room, Bedroom, Kitchen, and Bathroom
 - **Composite Control**: Turn on/off all devices in a room with a single command
 - **Room Details**: View all devices in a room and their current status
 - **Dynamic Updates**: Add devices to rooms and see changes instantly
+- **Visual Organization**: Rooms displayed with emoji indicators
+
+### Control Modes
+- **Manual Control**: Direct user control via GUI buttons
+- **Scheduled Control**: Time-based automation with intelligent decisions
+- **AI Control**: Intelligent automated control with device learning (new!)
+
+### AI Automation (NEW!)
+- **Random Device Automation**: Devices turn ON/OFF randomly every 5 seconds
+- **Intelligent Analysis**: AI analyzes occupancy, time, and temperature
+- **Contextual Decisions**: Makes smart choices based on environment
+- **Real-time Logging**: Live status updates in dedicated AI log
+- **Automation Callbacks**: Device state changes trigger UI notifications
+- **Start/Stop Controls**: Easy toggle for automation mode
+- **Dual Logging**: Updates appear in both AI log and main status log
 
 ### Advanced Features
-- **Brightness Control**: Adjustable brightness slider for lights (0-100%)
-- **Control Modes**: Switch between Manual, Scheduled, and AI control strategies
-- **Command History**: Undo/Redo functionality for device commands
+- **Command History**: Undo/Redo functionality for all device commands
 - **Legacy Device Support**: Integrate old fan devices using the Adapter pattern
 - **Energy Monitoring**: Track energy consumption for decorated devices
-- **Activity Logging**: Comprehensive timestamp-based activity log
+- **Activity Logging**: Comprehensive timestamp-based activity log with 24-hour format
 - **Voice Control Ready**: Framework for voice control decorators
+- **Flexible UI**: Responsive tabbed interface with dynamic tab management
 
 ## 🏗️ Design Patterns
 
